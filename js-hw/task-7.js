@@ -5,11 +5,13 @@
 */
 
 function add(x, y) {
-    return x + y;
+  return x + y;
 }
 
 function subtract(x, y) {
-    return x - y;
+  return x - y;
 }
 
-
+const calculate = (x, y, callback) => {
+  return callback(x, y);
+};
