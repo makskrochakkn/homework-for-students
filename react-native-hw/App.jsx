@@ -19,3 +19,84 @@
     - повідомлення про помилку, якщо error не порожній;
     - список завдань через FlatList, показуючи title кожного елемента.
 */
+
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  FlatList,
+  ActivityIndicator,
+  StyleSheet,
+} from "react-native";
+
+export default function App() {
+  const [tasks, setTasks] = useState([]);
+  const [count, setCount] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const fetchTasks = () => {
+    if (!count) return;
+    setLoading(true);
+    fetch(`https://jsonplaceholder.typicode.com/todos?_limit=${count}`)
+      .then((res) => res.json())
+      .then((data) => setTasks(data))
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
+  };
+
+  if (error) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.error}>{error}</Text>
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      <TextInput
+        style={styles.input}
+        keyboardType="numeric"
+        value={count}
+        onChangeText={setCount}
+        placeholder="Enter number of tasks"
+      />
+      {!loading ? (
+        <Button title="Fetch Tasks" onPress={fetchTasks} />
+      ) : (
+        <ActivityIndicator style={{ marginVertical: 20 }} size="large" />
+      )}
+
+      <FlatList
+        data={tasks}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.task}>
+            <Text>Title: {item.title}</Text>
+            <Text>Completed: {String(item.completed)}</Text>
+          </View>
+        )}
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, padding: 20, marginTop: 50 },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    padding: 10,
+    marginBottom: 10,
+    borderRadius: 5,
+  },
+  task: {
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+  },
+  error: { color: "red", fontSize: 16 },
+});
