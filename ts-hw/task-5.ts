@@ -5,11 +5,22 @@
     та призначити його тип об'єкту person.
 */
 
-const person = {
-    name: "Alex",
-    age: 25,
-    address: {
-        city: "Київ",
-        street: "Хрещатик"
-    }
+interface Address {
+  city: string;
+  street: string;
+}
+
+interface Person {
+  name: string;
+  age: number;
+  address: Address;
+}
+
+const person: Person = {
+  name: "Alex",
+  age: 25,
+  address: {
+    city: "Київ",
+    street: "Хрещатик",
+  },
 };
